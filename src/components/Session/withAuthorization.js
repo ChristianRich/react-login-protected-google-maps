@@ -33,7 +33,7 @@ const withAuthorization = (condition) => (Component) => {
       return (
         <AuthUserContext.Consumer>
           {(authUser) => {
-            // TODO fix bug: authUser is null after initial authentication. Probably has to do with an async issue?
+            // TODO fix bug: authUser is null after initial authentication. Probably has to do with an async issue or race condition?
             const user = JSON.parse(localStorage.getItem('authUser'))
             return condition(user) ? (
               <Component authUser={user} {...this.props} />
