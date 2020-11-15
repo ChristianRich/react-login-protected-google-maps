@@ -6,10 +6,10 @@ Built with React `16.9`
 
 ## How to install and run
 
-Clone, install and run the Node.js authentication repo:
+Clone, install and run the Node.js authentication app:  
 https://github.com/ChristianRich/node-server-side-firebase-auth
 
-In this repo, install dependencies and start the React app:
+Once above code base is running on `localhost:3001`, in this repo, install dependencies and start the React app:
 
 ```
 yarn
