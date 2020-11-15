@@ -74,7 +74,7 @@ class SignInFormBase extends Component {
 
     return (
       <div className="login">
-        <form onSubmit={this.handleSubmit}>
+        <form className="box" onSubmit={this.handleSubmit}>
           <p className="text-center">Sign in</p>
 
           <FormGroup controlId="email">
