@@ -1,0 +1,16 @@
+$size_sm: 16px;
+$size_lg: 32px;
+
+.loading-dot {
+  display: block;
+}
+
+.loading-dot-sm {
+  top: calc(50% - calc(#{$size_sm} / 2));
+  right: calc(50% - calc(#{$size_sm} / 2));
+}
+
+.loading-dot-lg {
+  top: calc(50% - calc(#{$size_lg} / 2));
+  right: calc(50% - calc(#{$size_lg} / 2));
+}
