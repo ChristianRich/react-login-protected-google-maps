@@ -26,8 +26,8 @@ class MapDirectionsRenderer extends React.Component {
 
     const origin = waypoints.shift().location
     const destination = waypoints.pop().location
-
     const directionsService = new google.maps.DirectionsService()
+
     directionsService.route(
       {
         origin: origin,
@@ -41,6 +41,9 @@ class MapDirectionsRenderer extends React.Component {
             directions: result,
           })
         } else {
+          this.setState({
+            directions: null,
+          })
           onError(status) // Propagate the error to the parent component
         }
       }

@@ -9,6 +9,7 @@ class LocationSearchInput extends React.Component {
     super(props)
     this.state = {
       address: '',
+      currentPostion: props.currentPostion,
     }
   }
 
@@ -40,7 +41,7 @@ class LocationSearchInput extends React.Component {
           <div>
             <input
               {...getInputProps({
-                placeholder: 'Search Places ...',
+                placeholder: 'Enter your destination',
                 className: 'location-search-input',
               })}
             />

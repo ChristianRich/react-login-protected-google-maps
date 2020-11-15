@@ -41,8 +41,12 @@ foo@bar.com
 
 ## Known issues
 
-- There's an issue with initial login, `authUser` is being accessed from `localStorage` before it exists (make async listener function)
-- Missing Google Maps loading state
+- There's a concurrency issue with initial login, `authUser` is being accessed from `localStorage` before it exists (make async listener function)
+- Google Maps is initialised twice. Should remove the API key in index.html and only pass it in the Maps component
+
+## TODO
+
+- Add unit tests (jest)
 
 ## Available Scripts
 

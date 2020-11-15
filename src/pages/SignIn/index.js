@@ -43,10 +43,16 @@ class SignInFormBase extends Component {
     this.props.firebase
       .doSignInWithEmailAndPassword(email, password)
       .then(() => {
-        const { redirect } = qs.parse(this.props.location.search) || ROUTES.HOME
+        // Get URL query params
+        const query = qs.parse(this.props.location.search, {
+          ignoreQueryPrefix: true,
+        })
+
+        // Get redirect path from query params or set default value to HOME
+        const { redirect = ROUTES.HOME } = query
 
         this.setState({
-          redirect,
+          redirect: redirect,
           error: null,
         })
       })
@@ -61,6 +67,7 @@ class SignInFormBase extends Component {
   render() {
     const { error, redirect, submitting } = this.state
 
+    // Redirect on successful login
     if (redirect) {
       return <Redirect to={redirect} />
     }

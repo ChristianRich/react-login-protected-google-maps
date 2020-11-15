@@ -6,7 +6,7 @@ import { withFirebase } from '../Firebase'
 import { SIGN_IN } from '../../constants/routes'
 
 /**
- * Higher Order Component conditionally rendering the passed in component for logged users or redirecting to /login for non logged user
+ * Higher Order Component conditionally rendering the passed in component for logged users or redirecting to /login
  * @param {Function} condition
  */
 const withAuthorization = (condition) => (Component) => {
@@ -19,7 +19,7 @@ const withAuthorization = (condition) => (Component) => {
     }
 
     async componentDidMount() {
-      const authUser = JSON.parse(localStorage.getItem('authUser'))
+      const authUser = this.props.firebase.getAuthUser()
 
       if (!condition(authUser)) {
         this.props.history.push({
@@ -27,22 +27,7 @@ const withAuthorization = (condition) => (Component) => {
           search: `?redirect=${this.props.location.pathname}`,
         })
       }
-
-      // this.listener = this.props.firebase.auth.onAuthStateChanged(
-      //   (authUser) => {
-      //     if (!condition(authUser)) {
-      //       this.props.history.push({
-      //         pathname: SIGN_IN,
-      //         search: `?redirect=${this.props.location.pathname}`,
-      //       })
-      //     }
-      //   }
-      // )
     }
-
-    // componentWillUnmount() {
-    //   this.listener()
-    // }
 
     render() {
       return (

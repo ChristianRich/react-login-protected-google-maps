@@ -3,7 +3,7 @@ import AuthUserContext from './context'
 import { withFirebase } from '../Firebase'
 
 /**
- * Higher Order Component checking for an authenticated user and passing the logged user (if any) to the child context
+ * Higher Order Component checking for an authenticated user and passing the logged user (if any) to the AuthUser context
  */
 const withAuthentication = (Component) => {
   class WithAuthentication extends React.Component {
@@ -11,28 +11,15 @@ const withAuthentication = (Component) => {
       super(props)
 
       this.state = {
-        authUser: JSON.parse(localStorage.getItem('authUser')),
+        authUser: this.props.firebase.getAuthUser(),
       }
     }
 
     componentDidMount() {
-      // this.listener = this.props.firebase.onAuthUserListener(
-      //   (authUser) => {
-      //     localStorage.setItem('authUser', JSON.stringify(authUser))
-      //     this.setState({ authUser })
-      //   },
-      //   () => {
-      //     localStorage.removeItem('authUser')
-      //     this.setState({ authUser: null })
-      //   }
-      // )
+      this.setState({
+        authUser: this.props.firebase.getAuthUser(),
+      })
     }
-
-    // componentWillUnmount() {
-    //   if (this.listener) {
-    //     this.listener()
-    //   }
-    // }
 
     render() {
       return (

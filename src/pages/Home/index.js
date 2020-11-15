@@ -11,8 +11,8 @@ class HomePage extends React.Component {
     this.state = {
       userPosition: null,
       destination: null,
-      places: [],
       error: null,
+      places: [],
     }
   }
 
@@ -24,31 +24,46 @@ class HomePage extends React.Component {
       )
     )
 
+  /**
+   * Update state once user selects a destination
+   * @param {object} location
+   */
   onLocationInputSelect = (location) => {
-    // User's current position from navigator.getCurrentPosition
+    // User's current location from navigator.getCurrentPosition()
     const from = {
       latitude: this.state.userPosition.latitude,
       longitude: this.state.userPosition.longitude,
     }
 
     // Reverse geo coding result from location selection in <LocationSearchInput> dropdown
-    const to = { latitude: location.latLng.lat, longitude: location.latLng.lng }
-    this.setState({ places: [from, to] })
+    const to = {
+      address: location.address,
+      latitude: location.latLng.lat,
+      longitude: location.latLng.lng,
+    }
+
+    // Now that we have both origin (from) and destination (to), we can ask Google Maps to calculate the route on the map
+    this.setState({
+      places: [from, to],
+      error: null,
+    })
   }
 
   onDirectionsError = (e) => {
     this.setState({
       places: [],
-      error: e,
+      error:
+        'Sorry, we were unable to calculate the route, please try using a destination closer to your current location.',
     })
   }
 
-  async componentDidMount() {
+  componentDidMount = async () => {
     try {
       const position = await this.getUserLocation()
       const { latitude, longitude } = position
 
       this.setState({
+        error: null,
         userPosition: {
           latitude,
           longitude,
@@ -56,13 +71,20 @@ class HomePage extends React.Component {
       })
     } catch (e) {
       this.setState({
+        error:
+          'Sorry, we were not able to get your current location. Please make sure you accept location permissions.',
         userPosition: null,
       })
     }
   }
 
+  getDestination() {
+    return this.state.places.length ? this.state.places[1].address : null
+  }
+
   render() {
-    const googleMapsApiKey = 'AIzaSyCW69-iSdalEkMAt09S5K_k470nmXIVro0'
+    const googleMapsApiKey = 'AIzaSyCW69-iSdalEkMAt09S5K_k470nmXIVro0' // TODO Add to config
+    const destinationAddress = this.getDestination()
 
     return (
       <PageContainer>
@@ -70,41 +92,51 @@ class HomePage extends React.Component {
           <Col className="col-sm">
             <Card>
               <Card.Body>
-                <Card.Title>Home</Card.Title>
-                <Card.Subtitle className="mb-2">
-                  Login protected page
-                  <br />
-                  Welcome <code>{this.props.authUser.email}!</code>
-                  <br />
-                  <br />
+                <Card.Title>Driving route planner tool</Card.Title>
+                <Card.Subtitle>
+                  <div className="mt-4 mb-4">
+                    Let's help you find the shortest driving distance to your
+                    desired destination.
+                  </div>
+
+                  <div className="mt-4 mb-4">
+                    <LocationSearchInput
+                      onLocationInputSelect={this.onLocationInputSelect}
+                      currentPostion={this.state.userPosition}
+                    />
+                  </div>
                 </Card.Subtitle>
 
-                <LocationSearchInput
-                  onLocationInputSelect={this.onLocationInputSelect}
-                />
+                {this.state.error && (
+                  <div className="mb-2 mt-2">{this.state.error}</div>
+                )}
 
-                <br />
-
-                {this.state.error && <div>{this.state.error}</div>}
-
-                {this.state.userPosition && (
-                  <Map
-                    googleMapURL={
-                      'https://maps.googleapis.com/maps/api/js?key=' +
-                      googleMapsApiKey +
-                      '&libraries=geometry,drawing,places'
-                    }
-                    markers={this.state.places}
-                    loadingElement={<div style={{ height: `100%` }} />}
-                    containerElement={<div style={{ height: '80vh' }} />}
-                    mapElement={<div style={{ height: `100%` }} />}
-                    defaultCenter={{
-                      lat: this.state.userPosition.latitude,
-                      lng: this.state.userPosition.longitude,
-                    }}
-                    directionsErrorHandler={this.onDirectionsError}
-                    defaultZoom={11}
-                  />
+                {this.state.userPosition ? (
+                  <>
+                    {destinationAddress && (
+                      <p>
+                        Please find your driving direction to &nbsp;
+                        {destinationAddress}
+                      </p>
+                    )}
+                    <Map
+                      googleMapURL={`https://maps.googleapis.com/maps/api/js?key=${googleMapsApiKey}&libraries=geometry,drawing,places`}
+                      markers={this.state.places}
+                      loadingElement={
+                        <div style={{ height: `100%` }}>Loading map...</div>
+                      }
+                      containerElement={<div style={{ height: '80vh' }} />}
+                      mapElement={<div style={{ height: `100%` }} />}
+                      defaultCenter={{
+                        lat: this.state.userPosition.latitude,
+                        lng: this.state.userPosition.longitude,
+                      }}
+                      directionsErrorHandler={this.onDirectionsError}
+                      defaultZoom={11}
+                    />
+                  </>
+                ) : (
+                  <p>Waiting for user location...</p>
                 )}
               </Card.Body>
             </Card>

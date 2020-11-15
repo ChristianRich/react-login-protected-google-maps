@@ -20,11 +20,12 @@ class Firebase {
     localStorage.setItem('authUser', JSON.stringify(body))
   }
 
+  // Currently not used, but for a real world app, the JWT needs server-side validation for each page load on protected pages
   doValidateIdToken = async () => {
-    const authUser = JSON.parse(localStorage.getItem('authUser'))
+    const authUser = this.getAuthUser()
 
     if (!authUser) {
-      throw new Error('doValidateIdToken.no auth user')
+      throw new Error('No authUser')
     }
 
     const { idToken } = authUser
@@ -47,35 +48,12 @@ class Firebase {
 
   doSignOut = () => {
     localStorage.removeItem('authUser')
-    window.location = '/signin'
+    window.location = '/signin?redirect=/'
   }
-  // getAuthUser = () =>
-  //   new Promise((resolve, reject) => {
-  //     if (this.authUser) {
-  //       return resolve(this.authUser)
-  //     }
 
-  //     this.auth.onAuthStateChanged(async (authUser) => {
-  //       if (authUser) {
-  //         // const profile = await this.getUserProfile(authUser.uid)
-  //         this.authUser = new UserModel(authUser)
-  //         resolve(this.authUser)
-  //       } else {
-  //         reject('User not logged in')
-  //       }
-  //     })
-  //   })
-
-  // onAuthUserListener = (next, fallback) =>
-  //   this.auth.onAuthStateChanged(async (authUser) => {
-  //     if (authUser) {
-  //       // const profile = await this.getUserProfile(authUser.uid)
-  //       this.authUser = new UserModel(authUser)
-  //       next(this.authUser)
-  //     } else {
-  //       fallback()
-  //     }
-  //   })
+  getAuthUser() {
+    return JSON.parse(localStorage.getItem('authUser'))
+  }
 }
 
 export default Firebase
