@@ -3,6 +3,7 @@ import { Card, Col, Row } from 'react-bootstrap'
 import PageContainer from '../../components/PageContainer'
 import { withAuthorization } from '../../components/Session'
 import LocationSearchInput from '../../components/LocationSearchInput'
+import LoadingDot from '../../components/LoadingDot'
 import Map from '../../components/Map'
 
 class HomePage extends React.Component {
@@ -136,7 +137,10 @@ class HomePage extends React.Component {
                     />
                   </>
                 ) : (
-                  <p>Waiting for user location...</p>
+                  <>
+                    <p>Waiting for user location...</p>
+                    <LoadingDot />
+                  </>
                 )}
               </Card.Body>
             </Card>
